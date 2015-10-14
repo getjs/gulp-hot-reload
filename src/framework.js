@@ -1,36 +1,37 @@
-import express from 'express'
-import fs from 'fs'
-import webpack from 'webpack'
-import dev from 'webpack-dev-middleware'
-import hot from 'webpack-hot-middleware'
-import config from './../webpack.config.js'
-import http from 'http'
-import path from 'path'
-import gutil from 'gulp-util'
+var express = require('express')
+var fs = require('fs')
+var webpack = require('webpack')
+var dev = require('webpack-dev-middleware')
+var hot = require('webpack-hot-middleware')
 
-export function createAndStartDevServer(getApp) {
-  const server = http.createServer((req, res, next) => {
+var http = require('http')
+var path = require('path')
+var gutil = require('gulp-util')
+
+function createAndStartDevServer (getApp) {
+  const server = http.createServer(function (req, res, next) {
     getApp()(req, res, next)
   })
-  server.listen(1337, '127.0.0.1',() => {
-    const port = server.address().port
-    const host = server.address().address
-    console.log(`Development server started at http://${host}:${port}`)
+  server.listen(1337, '127.0.0.1',function () {
+    var port = server.address().port
+    var host = server.address().address
+    console.log("Development server started at http://" + host + ":" +port)
   })
 }
 
-export function createWebpackCompiler() {
+function createWebpackCompiler (config) {
   config.entry = ['webpack-hot-middleware/client', './app/application.js']
   config.plugins.unshift(new webpack.HotModuleReplacementPlugin())
   return webpack(config)
 }
 
-export var enableHotReload = (function() {
+
+var enableHotReload = (function() {
   var compiler, devMiddleware, hotMiddleware
 
-  return function (app) {
+  return function (app, config) {
     //create once and reuse to keep socket connections
-    if(!compiler) compiler = createWebpackCompiler()
+    if(!compiler) compiler = createWebpackCompiler(config)
     if(!devMiddleware) devMiddleware = dev(compiler, {
       noInfo: true,
       publicPath: config.output.publicPath
@@ -42,7 +43,8 @@ export var enableHotReload = (function() {
   }
 })()
 
-export function reloadApplication(serverCode) {
+
+function reloadApplication (serverCode, config) {
   //var serverCode = fs.readFileSync('./build/server.js','utf8')
 
   //we can't just re-import as not sure what module systems used
@@ -50,13 +52,13 @@ export function reloadApplication(serverCode) {
   var reloadedApp = eval(serverCode)
 
   //we got new app, need to hot reload again
-  enableHotReload(reloadedApp)
+  enableHotReload(reloadedApp, config)
   return reloadedApp
 }
 
 //app will try to create server again - intercept EADDRINUSE error and ignore it, otherwise rethrow
-export function ignoreServerRecreated() {
-  process.on('uncaughtException', (e) => {
+function ignoreServerRecreated () {
+  process.on('uncaughtException', function (e) {
     if (e.code !== 'EADDRINUSE' || e.syscall !== 'listen' || e.address != '127.0.0.1' || e.port !== 1337) {
       console.log(e)
       throw e
@@ -64,3 +66,8 @@ export function ignoreServerRecreated() {
   })
 }
 
+exports.createAndStartDevServer = createAndStartDevServer
+exports.reloadApplication = reloadApplication
+exports.createWebpackCompiler = createWebpackCompiler
+exports.enableHotReload = enableHotReload
+exports.ignoreServerRecreated = ignoreServerRecreated

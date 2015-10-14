@@ -1,21 +1,24 @@
-import through2 from 'through2'
-import express from 'express'
-import gutil from 'gulp-util'
-import {createAndStartDevServer, enableHotReload, ignoreServerRecreated, reloadApplication} from './framework'
+var through2 = require('through2')
+var express =  require('express')
+var gutil = require('gulp-util')
+var util = require('./framework')
 
-export default (function(options) {
+module.exports = (function() {
 
-  var application
+  var application, config
 
   var defaults = {
+    config: null,
     port: 1337,
     host: '127.0.0.1',
     hmr: true,
     express: true
   }
 
-  return function() {
-    gutil.log('application:', application)
+  return function(options) {
+    if(!config) {
+      config = require(options.config)
+    }
     if(!application) {
       gutil.log('init application')
       //pack it into function to ensure that subsequent runs will reuse the very same application object
@@ -24,7 +27,9 @@ export default (function(options) {
       //Http server checks application from the closure each time. if we pass reference,
       //the reference would be remembered.
       //With the function there is new check for each call.
-      init(() => application)
+      init(function () {
+        return application
+      }, config)
     }
 
     var files = []
@@ -43,19 +48,19 @@ export default (function(options) {
     stream.on('end', function() {
       //take first chunk
       var serverCode = files[0]
-      application = reloadApplication(serverCode)
+      application = util.reloadApplication(serverCode, config)
     })
     return stream
   }
 })()
 
-function init(getApp) {
+function init(getApp, config) {
   //enable react hot reload
-  enableHotReload(getApp())
+  util.enableHotReload(getApp(), config)
 
   //since reloadApplication changes application reference, it must be evaluated for each request
-  createAndStartDevServer(getApp)
+  util.createAndStartDevServer(getApp)
 
   //if original application created http server, ignore any errors
-  ignoreServerRecreated()
+  util.ignoreServerRecreated()
 }
