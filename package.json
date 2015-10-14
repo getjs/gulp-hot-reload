@@ -1,0 +1,35 @@
+{
+  "name": "gulp-reload",
+  "version": "1.0.0",
+  "description": "Gulp plugin to reload Express/React.js application without server restart",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://bitbucket.org/getjs/gulp-reload.git"
+  },
+  "keywords": [
+    "gulp",
+    "hml",
+    "express",
+    "react.js",
+    "hot",
+    "reload",
+    "restart"
+  ],
+  "author": "Marcin Mieszek (http://getjs.org)",
+  "license": "MIT",
+  "homepage": "https://bitbucket.org/getjs/gulp-reload#readme",
+  "devDependencies": {
+    "mocha": "^2.3.3"
+  },
+  "dependencies": {
+    "express": "^4.13.3",
+    "gulp-util": "^3.0.6",
+    "http": "0.0.0",
+    "through2": "^2.0.0",
+    "webpack": "^1.12.2"
+  }
+}

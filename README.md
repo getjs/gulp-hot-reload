@@ -1,1 +1,3 @@
-#Full hot reload with Express and React.js
+#gulp-reload
+
+Gulp plugin to reload Express/React.js application without server restart
