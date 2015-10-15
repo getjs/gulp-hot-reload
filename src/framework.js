@@ -1,12 +1,7 @@
-var express = require('express')
-var fs = require('fs')
+var http = require('http')
 var webpack = require('webpack')
 var dev = require('webpack-dev-middleware')
 var hot = require('webpack-hot-middleware')
-
-var http = require('http')
-var path = require('path')
-var gutil = require('gulp-util')
 
 function createAndStartDevServer (getApp) {
   const server = http.createServer(function (req, res, next) {
@@ -45,8 +40,6 @@ var enableHotReload = (function() {
 
 
 function reloadApplication (serverCode, config) {
-  //var serverCode = fs.readFileSync('./build/server.js','utf8')
-
   //we can't just re-import as not sure what module systems used
   //eval works for all the module systems.
   var reloadedApp = eval(serverCode)
