@@ -15,7 +15,7 @@ function createAndStartDevServer (getApp) {
 }
 
 function createWebpackCompiler (config) {
-  config.entry = config.entry.push('webpack-hot-middleware/client')
+  config.entry.unshift('webpack-hot-middleware/client')
   config.plugins.unshift(new webpack.HotModuleReplacementPlugin())
   return webpack(config)
 }
