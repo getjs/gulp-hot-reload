@@ -1,6 +1,6 @@
 # [gulp-hot-reload](https://github.com/getjs/gulp-hot-reload)
 
-Gulp plugin to reload Express/React.js application without server restart
+Gulp plugin to reload Express/React.js application without server restart.
 
 To get started, see complete [gulp-hot-reload-boilerplate](https://github.com/getjs/gulp-hot-reload-boilerplate).
 
@@ -31,6 +31,19 @@ gulp.task('build-backend', () => {
 
 - Create webpack configuration for client and server
 - Add .babelrc file to your project
+
+## How it Works
+
+- the pipeline starts with running *gulp.src* on application entry point
+- webpack-stream is a stream-enabled webpack compiler, that can be easily plugged into gulp pipeline. It runs webpack internally, sending the file from *gulp.src* as an entry point 
+- webpack bundles server application. It is possible with minor tweaks to [webpack configuration](https://github.com/getjs/gulp-hot-reload-boilerplate/blob/master/README.md#webpackserverconfigjs) and offers several benefits
+- application, as a single chunk, comes into gulp-hot-reload. Having whole application in a single entity makes hot reload easy
+- gulp-hot-reload starts development server if it has not started already. If the development server is configured to be started on the same port as the application server, the application server will not start and only one server instance will be running
+- gulp-hot-reload runs *eval* on bundles application
+- server.js module.exports the application, hence it is returned
+- gulp-hot-reload configures webpack-dev-middleware and webpack-hot-middleware on it
+- development server routes all the requests to the applciation returned from *eval*
+- gulp watches for files changes and runs the process if any file is modified.
 
 ## Options
 
