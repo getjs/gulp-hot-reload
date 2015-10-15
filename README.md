@@ -22,6 +22,8 @@ gulp.task('build-backend', () => {
     .src('./src/server.js')
     .pipe(webpackStream(serverConfig, webpack, buildDone))
     .pipe(reload({
+      port: 1337,
+      react: true,
       config: path.join(__dirname, 'webpack.config.js')
     }))
 })
@@ -30,6 +32,22 @@ gulp.task('build-backend', () => {
 - Create webpack configuration for client and server
 
 - Add .babelrc file to your project
+
+## Options
+
+Options are passed to the plugin function in gulpfile:
+
+```javascript
+    .pipe(reload({
+      port: 1337,
+      react: true,
+      config: path.join(__dirname, 'webpack.config.js')
+    }))
+```
+
+- **port** - default: 1337. Port at which dev server starts. It might be the same port as used by the application - in such a case gulp-hot-reload will start development server and block the application server from starting. If the ports differ, both development and application servers start.
+- **react** - default: true. If true, hot module replacement of React components is enabled. Set it to false to benefit from server reload without having React application in frontend.
+- **config** - path to client webpack configuration. For sample see [boilerplate webpack.config.js](https://github.com/getjs/gulp-hot-reload-boilerplate/blob/master/webpack.config.js).
 
 ## Inspirations and references
 - [babel-plugin-react-transform](https://github.com/gaearon/babel-plugin-react-transform)
