@@ -8,14 +8,25 @@ module.exports = (function() {
   var application, config
 
   var defaults = {
-    config: null,
     port: 1337,
     host: '127.0.0.1',
-    hmr: true,
+    react: true,
     express: true
   }
 
-  return function(options) {
+  return function(inputOptions) {
+
+    var options = inputOptions || {}
+    options.config = inputOptions.config
+    options.port = inputOptions.port || defaults.port
+    options.host = inputOptions.host || defaults.host
+    if(typeof inputOptions.react === 'undefined') {
+      options.react = defaults.react
+    }
+    if(typeof inputOptions.express === 'undefined') {
+      options.express = defaults.express
+    }
+
     if(!config) {
       config = require(options.config)
     }
@@ -29,7 +40,7 @@ module.exports = (function() {
       //With the function there is new check for each call.
       init(function () {
         return application
-      }, config)
+      }, config, options)
     }
 
     var files = []
@@ -48,18 +59,18 @@ module.exports = (function() {
     stream.on('end', function() {
       //take first chunk
       var serverCode = files[0]
-      application = util.reloadApplication(serverCode, config)
+      application = util.reloadApplication(serverCode, config, options)
     })
     return stream
   }
 })()
 
-function init(getApp, config) {
+function init(getApp, config, options) {
   //enable react hot reload
-  util.enableHotReload(getApp(), config)
+  util.enableHotReload(getApp(), config, options)
 
   //since reloadApplication changes application reference, it must be evaluated for each request
-  util.createAndStartDevServer(getApp)
+  util.createAndStartDevServer(getApp, options)
 
   //if original application created http server, ignore any errors
   util.ignoreServerRecreated()

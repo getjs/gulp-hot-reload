@@ -1,6 +1,6 @@
 {
   "name": "gulp-hot-reload",
-  "version": "1.1.4",
+  "version": "1.2.0",
   "description": "Gulp plugin to reload Express/React.js application without server restart",
   "main": "src/index.js",
   "scripts": {
