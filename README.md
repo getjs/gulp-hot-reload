@@ -30,7 +30,6 @@ gulp.task('build-backend', () => {
 ```
 
 - Create webpack configuration for client and server
-
 - Add .babelrc file to your project
 
 ## Options
