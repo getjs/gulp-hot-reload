@@ -1,4 +1,5 @@
-# [gulp-hot-reload](https://github.com/getjs/gulp-hot-reload)
+gulp-hot-reload [![](http://img.shields.io/npm/dm/gulp-hot-reload.svg?style=flat)](https://www.npmjs.org/package/gulp-hot-reload) [![](http://img.shields.io/npm/v/gulp-hot-reload.svg?style=flat)](https://www.npmjs.org/package/gulp-hot-reload)
+==============
 
 Gulp plugin to reload Express/React.js application without server restart.
 
