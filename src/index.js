@@ -28,7 +28,7 @@ module.exports = (function() {
     }
 
     if(!config) {
-      config = require(options.config)
+      config = typeof options.config === 'string' ? require(options.config) : options.config
     }
     if(!application) {
       gutil.log('init application')
