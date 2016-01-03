@@ -15,7 +15,7 @@ function createAndStartDevServer (getApp, options) {
 }
 
 function createWebpackCompiler (config) {
-  config.entry.unshift('webpack-hot-middleware/client')
+  config.entry.unshift('webpack-hot-middleware/client?path=' + config.output.publicPath + '__webpack_hmr')
   config.plugins.unshift(new webpack.HotModuleReplacementPlugin())
   return webpack(config)
 }
@@ -34,7 +34,7 @@ var enableHotReload = (function() {
     app.use(devMiddleware)
 
     if(options.react) {
-      if(!hotMiddleware) hotMiddleware = hot(compiler)
+      if(!hotMiddleware) hotMiddleware = hot(compiler, { path: config.output.publicPath + '__webpack_hmr' })
       app.use(hotMiddleware)
     }
   }
