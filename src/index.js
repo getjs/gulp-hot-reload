@@ -47,10 +47,11 @@ module.exports = (function() {
 
 
     var stream = through2.obj(function(file, enc, done) {
-      if (file.isBuffer()) {
+      if (/\.js$/.test(file.path) && file.isBuffer()) {
         var code = file.contents.toString(enc)
+        this.push(code)
       }
-      this.push(code)
+
       done()
     })
     stream.on('data', function(code) {
