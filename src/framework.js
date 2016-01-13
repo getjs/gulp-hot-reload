@@ -2,6 +2,7 @@ var http = require('http')
 var webpack = require('webpack')
 var dev = require('webpack-dev-middleware')
 var hot = require('webpack-hot-middleware')
+var gutil = require('gulp-util')
 
 function createAndStartDevServer (getApp, options) {
   const server = http.createServer(function (req, res, next) {
@@ -44,12 +45,17 @@ var enableHotReload = (function() {
 function reloadApplication (serverCode, config, options) {
   //we can't just re-import as not sure what module systems used
   //eval works for all the module systems.
-  var reloadedApp = eval(serverCode)
+  try {
+    var reloadedApp = eval(serverCode)
 
-  //we got new app, need to hot reload again
-  enableHotReload(reloadedApp, config, options)
+    //we got new app, need to hot reload again
+    enableHotReload(reloadedApp, config, options)
+    return reloadedApp
+  } catch(err) {
+    gutil.log('[gulp-reload]', err.stack ? err.stack : err)
+  }
 
-  return reloadedApp
+
 }
 
 //app will try to create server again - intercept EADDRINUSE error and ignore it, otherwise rethrow
