@@ -30,7 +30,8 @@ var enableHotReload = (function() {
     if(!compiler) compiler = createWebpackCompiler(config)
     if(!devMiddleware) devMiddleware = dev(compiler, {
       noInfo: true,
-      publicPath: config.output.publicPath
+      publicPath: config.output.publicPath,
+      stats: options.stats
     })
     app.use(devMiddleware)
 
@@ -59,9 +60,9 @@ function reloadApplication (serverCode, config, options) {
 }
 
 //app will try to create server again - intercept EADDRINUSE error and ignore it, otherwise rethrow
-function ignoreServerRecreated () {
+function ignoreServerRecreated (options) {
   process.on('uncaughtException', function (e) {
-    if (e.code !== 'EADDRINUSE' || e.syscall !== 'listen' || e.address != '127.0.0.1' || e.port !== 1337) {
+    if (e.code !== 'EADDRINUSE' || e.syscall !== 'listen' || e.address != '127.0.0.1' || e.port !== options.port) {
       console.log(e)
       throw e
     }

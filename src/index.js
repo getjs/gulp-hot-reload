@@ -31,7 +31,7 @@ module.exports = (function() {
       config = typeof options.config === 'string' ? require(options.config) : options.config
     }
     if(!application) {
-      gutil.log('init application')
+      gutil.log('[gulp-reload]', 'init application')
       //pack it into function to ensure that subsequent runs will reuse the very same application object
       application = express()
 
@@ -74,5 +74,5 @@ function init(getApp, config, options) {
   util.createAndStartDevServer(getApp, options)
 
   //if original application created http server, ignore any errors
-  util.ignoreServerRecreated()
+  util.ignoreServerRecreated(options)
 }
