@@ -11,7 +11,7 @@ function createAndStartDevServer (getApp, options) {
   server.listen(options.port, options.host, function () {
     var port = server.address().port
     var host = server.address().address
-    console.log("Development server started at http://" + host + ":" +port)
+    gutil.log('[gulp-reload]', "Development server started at http://" + host + ":" +port)
   })
 }
 
@@ -64,7 +64,7 @@ function reloadApplication (serverCode, config, options) {
 function ignoreServerRecreated (options) {
   process.on('uncaughtException', function (e) {
     if (e.code !== 'EADDRINUSE' || e.syscall !== 'listen' || e.address != '127.0.0.1' || e.port !== options.port) {
-      console.log(e)
+      gutil.log('[gulp-reload]', e)
       throw e
     }
   })
