@@ -28,10 +28,10 @@ module.exports = (function() {
     }
 
     if(!config) {
-      config = require(options.config)
+      config = typeof options.config === 'string' ? require(options.config) : options.config
     }
     if(!application) {
-      gutil.log('init application')
+      gutil.log('[gulp-reload]', 'init application')
       //pack it into function to ensure that subsequent runs will reuse the very same application object
       application = express()
 
@@ -47,10 +47,11 @@ module.exports = (function() {
 
 
     var stream = through2.obj(function(file, enc, done) {
-      if (file.isBuffer()) {
+      if (/\.js$/.test(file.path) && file.isBuffer()) {
         var code = file.contents.toString(enc)
+        this.push(code)
       }
-      this.push(code)
+
       done()
     })
     stream.on('data', function(code) {
@@ -73,5 +74,5 @@ function init(getApp, config, options) {
   util.createAndStartDevServer(getApp, options)
 
   //if original application created http server, ignore any errors
-  util.ignoreServerRecreated()
+  util.ignoreServerRecreated(options)
 }
