@@ -18,7 +18,7 @@ function createAndStartDevServer (getApp, options) {
 function createWebpackCompiler (config) {
   config.entry['webpack_hm_client'] = 'webpack-hot-middleware/client?path=' + config.output.publicPath + '__webpack_hmr';
   if (typeof config.plugins === 'undefined') config.plugins = []
-  config.plugins['webpack_hmr_plugin'] = new webpack.HotModuleReplacementPlugin();
+  config.plugins.unshift(new webpack.HotModuleReplacementPlugin());
   return webpack(config)
 }
 
